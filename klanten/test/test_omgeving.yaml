@@ -1,0 +1,50 @@
+- name: Update web servers
+  
+     hosts: tyme-test-web-1-test ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-2-test ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-3-test ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-4-test ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-5-test ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-1-4 ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-2-4 ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-3-4 ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-4-4 ansible_user=vagrant
+  
+     become: true
+- name: Update web servers
+  
+     hosts: tyme-test-web-5-4 ansible_user=vagrant
+  
+     become: true

@@ -1,0 +1,80 @@
+---
+- name: Update loadbalancer
+  hosts: loadbalancer
+  become: true
+
+  tasks:
+  - name: Remove default haproxy config
+    ansible.builtin.file:
+      path: /etc/haproxy/haprocy.cfg
+      state: absent 
+
+  - name: Provision haproxy config
+    ansible.builtin.copy:
+      src: 'haproxy.cfg'
+      dest: /etc/haproxy/haproxy.cfg
+
+  - name: Restart haproxy
+    ansible.builtin.service:
+      name: haproxy
+      state: restarted
+
+- name: Update web servers
+  hosts: webservers
+  become: true
+
+  tasks:
+  - name: Install Apache2
+    apt:
+      name: apache2
+      state: present
+
+  - name: Install php-mysqli
+    apt:
+      name: php-mysqli
+      state: present
+
+  - name: Install lib apache mod
+    apt:
+      name: libapache2-mod-php
+      state: present
+
+  - name: Remove folder (delete folder)
+    ansible.builtin.file:
+      path: /var/www/html
+      state: absent
+
+  - name: Create folder (delete folder)
+    ansible.builtin.file:
+      path: /var/www/html
+      state: directory
+      recurse: yes
+      mode: 0777
+
+  - name: Restart Apache2
+    ansible.builtin.service:
+      name: apache2
+      state: restarted
+
+- name: Update web servers
+  hosts: tyme-6-web-1-productie ansible_user=vagrant
+
+  become: true
+  tasks:
+
+  - name: Provision php file
+    ansible.builtin.copy:
+      src: 'tyme-6-web-1-productie.php'
+      dest: /var/www/html/index.php
+
+
+- name: Update web servers
+  hosts: tyme-6-web-2-productie ansible_user=vagrant
+
+  become: true
+  tasks:
+
+  - name: Provision php file
+    ansible.builtin.copy:
+      src: 'tyme-6-web-2-productie.php'
+      dest: /var/www/html/index.php

@@ -1,0 +1,6 @@
+[webservers]
+tyme-5-web-1-productie ansible_user=vagrant
+[loadbalancer]
+tyme-5-lb-1-productie ansible_user=vagrant
+[database]
+tyme-5-db-1-productie ansible_user=vagrant

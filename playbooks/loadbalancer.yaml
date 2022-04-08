@@ -1,0 +1,25 @@
+- name: Update loadbalancer
+  hosts: loadbalancer
+  become: true
+
+  tasks:
+  - name: Install haproxy
+    apt:
+      name: haproxy
+      state: present
+
+
+  - name: Remove default haproxy config
+    ansible.builtin.file:
+      path: /etc/haproxy/haprocy.cfg
+      state: absent 
+
+  - name: Provision haproxy config
+    ansible.builtin.copy:
+      src: 'haproxy.cfg'
+      dest: /etc/haproxy/haproxy.cfg
+
+  - name: Restart haproxy
+    ansible.builtin.service:
+      name: haproxy
+      state: restarted

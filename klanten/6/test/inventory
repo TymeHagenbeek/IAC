@@ -1,0 +1,4 @@
+[webservers]
+tyme-6-web-1-test ansible_user=vagrant
+[loadbalancer]
+tyme-6-lb-1-test ansible_user=vagrant

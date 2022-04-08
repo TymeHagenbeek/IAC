@@ -1,0 +1,117 @@
+---
+- name: Update database
+  hosts: database
+  become: true
+  roles:
+    - { role: geerlingguy.mysql }
+    
+- name: Configure database server
+  hosts: database
+  become: true
+
+  tasks:
+  - name: Remove default mysql config
+    ansible.builtin.file:
+      path: /etc/mysql/mysql.conf.d/mysqld.cnf
+      state: absent 
+
+  - name: Provision mysql config
+    ansible.builtin.copy:
+      src: /home/student/IAC/config-files/mysqld.cnf
+      dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+
+  - name: Configure mysql user
+    community.mysql.mysql_user:
+      name: tyme
+      password: welkom
+      priv: '*.*:ALL'
+      state: present
+      host: "%"
+
+  - name: Copy database dump file from host
+    copy:
+      src: /home/student/IAC/config-files/test.sql
+      dest: /tmp/test.sql
+
+  - name: Import database
+    community.mysql.mysql_db:
+      name: test
+      state: import
+      target: /tmp/test.sql
+
+
+- name: Update loadbalancer
+  hosts: loadbalancer
+  become: true
+
+  tasks:
+  - name: Install haproxy
+    apt:
+      name: haproxy
+      state: present
+
+  - name: Remove default haproxy config
+    ansible.builtin.file:
+      path: /etc/haproxy/haprocy.cfg
+      state: absent 
+
+  - name: Provision haproxy config
+    ansible.builtin.copy:
+      src: 'haproxy.cfg'
+      dest: /etc/haproxy/haproxy.cfg
+
+  - name: Restart haproxy
+    ansible.builtin.service:
+      name: haproxy
+      state: restarted
+
+- name: Update web servers
+  hosts: webservers
+  become: true
+
+  tasks:
+  - name: Install Apache2
+    apt:
+      name: apache2
+      state: present
+
+  - name: Install php-mysqli
+    apt:
+      name: php-mysqli
+      state: present
+
+  - name: Install lib apache mod
+    apt:
+      name: libapache2-mod-php
+      state: present
+
+  - name: Remove folder (delete folder)
+    ansible.builtin.file:
+      path: /var/www/html
+      state: absent
+
+  - name: Create folder (delete folder)
+    ansible.builtin.file:
+      path: /var/www/html
+      state: directory
+      recurse: yes
+      mode: 0777
+
+  - name: Restart Apache2
+    ansible.builtin.service:
+      name: apache2
+      state: restarted
+
+
+
+
+- name: Update web servers
+  hosts: tyme-5-web-1-productie ansible_user=vagrant
+
+  become: true
+  tasks:
+
+  - name: Provision php file
+    ansible.builtin.copy:
+      src: 'tyme-5-web-1-productie.php'
+      dest: /var/www/html/index.php
